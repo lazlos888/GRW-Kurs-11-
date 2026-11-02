@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Globalisierung I – Abschlussquiz</title>
+<style>
+  :root { --bg:#f4f7f8; --card:#ffffff; --text:#1e1e1e; --muted:#5f6b70; --navy:#12343b;
+          --accent:#e2711d; --ok:#1d7a3e; --ok-bg:#e3f3e8; --bad:#b3261e; --bad-bg:#fbe5e3; --line:#d5dee0; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1c1f; --card:#18292d; --text:#eef3f4; --muted:#a9b8bc; --navy:#9fc3cb;
+            --accent:#f0954f; --ok:#7fd49b; --ok-bg:#183626; --bad:#f2a49d; --bad-bg:#3a1d1b; --line:#2c4247; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+  .course { color:var(--muted); font-size:14px; margin:0; }
+  h1 { color:var(--navy); font-size:24px; margin:4px 0 6px; }
+  .hint { color:var(--muted); font-size:15px; margin:0 0 18px; }
+  .q { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .q h2 { font-size:17px; margin:0 0 12px; }
+  .q h2 span { color:var(--accent); margin-right:6px; }
+  button.opt { display:block; width:100%; text-align:left; font:inherit; color:inherit; background:transparent;
+               border:1px solid var(--line); border-radius:10px; padding:11px 12px; margin-bottom:8px; cursor:pointer; }
+  button.opt:disabled { cursor:default; }
+  button.opt.right { border-color:var(--ok); background:var(--ok-bg); font-weight:600; }
+  button.opt.wrong { border-color:var(--bad); background:var(--bad-bg); }
+  .explain { margin:6px 0 0; font-size:15px; }
+  .explain b.r { color:var(--ok); } .explain b.f { color:var(--bad); }
+  #result { background:var(--navy); color:#fff; border-radius:12px; padding:18px; text-align:center; display:none; }
+  @media (prefers-color-scheme: dark) { #result { color:#0f1c1f; } }
+  #result strong { display:block; font-size:30px; }
+  footer { color:var(--muted); font-size:13px; margin-top:22px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="course">GRW · Grundkurs 11 · 10.11.2026</p>
+  <h1>Globalisierung I – Abschlussquiz</h1>
+  <p class="hint">Tippe jeweils eine Antwort an. Du siehst sofort, ob sie stimmt. Merk dir die Fragen, bei denen du unsicher warst.</p>
+  <div id="quiz"></div>
+  <div id="result"><strong id="score"></strong><span id="verdict"></span></div>
+  <footer>Dieses Quiz speichert und sendet keine Daten. Inhalte nach: Hans-Böckler-Stiftung (2021): Themenheft Globalisierung.</footer>
+</main>
+<script>
+const QUESTIONS = [{"question": "Ein Foto zeigt eine Anzeigetafel mit Börsenkursen in Echtzeit. Welche zwei Dimensionen der Globalisierung passen am besten?", "options": ["Umwelt und Politik", "Wirtschaft und Digitalisierung", "Gesellschaft und Umwelt", "Politik und Kultur"], "answer": 1, "explanation": "Kapital fließt über Grenzen (Wirtschaft), und die Kurse werden weltweit in Echtzeit übertragen (Digitalisierung)."}, {"question": "Zu welcher Dimension zählen Klimawandel und Pandemien als globale Bedrohungen?", "options": ["Umwelt", "Wirtschaft", "Digitalisierung", "Politik"], "answer": 0, "explanation": "Das Themenheft ordnet globale Bedrohungen wie Klimawandel und Pandemien der Umwelt zu."}, {"question": "Womit beginnt laut Grafik die Reise der Jeans?", "options": ["Spinnerei in der Türkei", "Näherei in China", "Baumwollanbau in Kasachstan", "Vertrieb in Deutschland"], "answer": 2, "explanation": "Station 1 ist der Baumwollanbau in Kasachstan."}, {"question": "Welcher Arbeitsschritt findet laut Grafik in China statt?", "options": ["Färberei", "Näherei", "Knöpfe und Nieten", "Wäscherei (Stone-washed)"], "answer": 1, "explanation": "In China wird die Jeans genäht (Station 7)."}, {"question": "Wie lang ist die Strecke der Jeans laut Grafik ungefähr – ohne den Weg nach Afrika?", "options": ["rund 5.000 km", "rund 15.000 km", "rund 50.000 km", "rund 150.000 km"], "answer": 2, "explanation": "Rund 50.000 km, dazu kommen rund 8.000 km für die Verschiffung als Altkleidung nach Afrika."}, {"question": "Was passiert laut Grafik am Ende mit der Jeans?", "options": ["Sie wird in Deutschland verbrannt.", "Sie wird in China recycelt.", "Sie wird nach Afrika verschifft und auf Altkleidermärkten verkauft.", "Sie wird zurück nach Kasachstan gebracht."], "answer": 2, "explanation": "Station 13: Verschiffung nach Afrika und Verkauf auf Altkleidermärkten."}, {"question": "Wie viel verdiente laut M2 ein Fabrikarbeiter in Bangladesch im Monat (Stand 2017)?", "options": ["54 €", "540 €", "1.100 €", "3.950 €"], "answer": 0, "explanation": "54 € im Monat. Arbeitsintensive Schritte wie das Nähen landen deshalb oft dort, wo die Lohnkosten niedrig sind."}, {"question": "Welche Voraussetzung der Globalisierung beruht auf politischen Entscheidungen?", "options": ["Sinkende Transportkosten durch Containerschiffe", "Internet und Mikroelektronik", "Abbau von Handelsschranken wie Zöllen", "Spezialisierung auf Knöpfe und Nieten in Italien"], "answer": 2, "explanation": "Zölle und Handelsregeln legen Staaten fest. Was politisch beschlossen wurde, kann auch geändert werden – mehr dazu nächste Stunde."}];
+const quiz = document.getElementById('quiz');
+let answered = 0, correct = 0;
+
+QUESTIONS.forEach((q, qi) => {
+  const box = document.createElement('section');
+  box.className = 'q';
+  const h = document.createElement('h2');
+  h.innerHTML = '<span>' + (qi + 1) + '/' + QUESTIONS.length + '</span>';
+  h.appendChild(document.createTextNode(q.question));
+  box.appendChild(h);
+  const buttons = q.options.map((text, oi) => {
+    const b = document.createElement('button');
+    b.className = 'opt';
+    b.type = 'button';
+    b.textContent = text;
+    b.addEventListener('click', () => choose(oi));
+    box.appendChild(b);
+    return b;
+  });
+  const explain = document.createElement('p');
+  explain.className = 'explain';
+  box.appendChild(explain);
+  quiz.appendChild(box);
+
+  function choose(oi) {
+    buttons.forEach(b => b.disabled = true);
+    buttons[q.answer].classList.add('right');
+    const isRight = oi === q.answer;
+    if (!isRight) buttons[oi].classList.add('wrong');
+    explain.innerHTML = isRight ? '<b class="r">Richtig.</b> ' : '<b class="f">Leider falsch.</b> ';
+    explain.appendChild(document.createTextNode(q.explanation));
+    answered++;
+    if (isRight) correct++;
+    if (answered === QUESTIONS.length) showResult();
+  }
+});
+
+function showResult() {
+  document.getElementById('score').textContent = correct + ' von ' + QUESTIONS.length + ' richtig';
+  document.getElementById('verdict').textContent = correct >= 7 ? 'Stark – du hast die Stunde sicher im Griff.'
+    : correct >= 5 ? 'Gut – schau dir die falschen Fragen noch einmal an.'
+    : 'Geh die Fragen mit deinem Heft noch einmal durch.';
+  const r = document.getElementById('result');
+  r.style.display = 'block';
+  r.scrollIntoView({ behavior: 'smooth' });
+}
+</script>
+</body>
+</html>
