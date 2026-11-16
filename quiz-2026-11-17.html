@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ihr seid das WTO-Schiedsgericht</title>
+<style>
+  :root { --bg:#f4f7f8; --card:#ffffff; --text:#1e1e1e; --muted:#5f6b70; --navy:#12343b; --on-navy:#ffffff;
+          --accent:#e2711d; --ok:#1d7a3e; --ok-bg:#e3f3e8; --bad:#b3261e; --bad-bg:#fbe5e3; --line:#d5dee0; --soft:#eef3f4; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#0f1c1f; --card:#18292d; --text:#eef3f4; --muted:#a9b8bc; --navy:#9fc3cb; --on-navy:#0f1c1f;
+            --accent:#f0954f; --ok:#7fd49b; --ok-bg:#183626; --bad:#f2a49d; --bad-bg:#3a1d1b; --line:#2c4247; --soft:#1f3338; }
+  }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--text);
+         font: 17px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif; }
+  main { max-width: 640px; margin: 0 auto; padding: 20px 16px 48px; }
+  .course { color:var(--muted); font-size:14px; margin:0; }
+  h1 { color:var(--navy); font-size:24px; margin:4px 0 6px; }
+  .hint { color:var(--muted); font-size:15px; margin:0 0 14px; }
+  details { background:var(--soft); border-radius:12px; padding:10px 14px; margin-bottom:14px; font-size:15px; }
+  summary { cursor:pointer; font-weight:600; color:var(--navy); }
+  details p { margin:8px 0 0; }
+  .bar { height:6px; background:var(--line); border-radius:3px; margin-bottom:14px; overflow:hidden; }
+  .bar div { height:100%; width:0; background:var(--accent); transition:width .3s; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; margin-bottom:14px; }
+  .label { color:var(--accent); font-size:13px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; margin:0 0 4px; }
+  .card h2 { font-size:19px; margin:0 0 8px; color:var(--navy); }
+  .card p { margin:0 0 12px; }
+  .step { font-weight:600; margin:14px 0 8px; }
+  .pair { display:flex; gap:8px; }
+  .pair button.opt { flex:1; text-align:center; font-weight:600; }
+  button { font:inherit; color:inherit; }
+  button.opt { display:block; width:100%; text-align:left; background:transparent; border:1px solid var(--line);
+               border-radius:10px; padding:11px 12px; margin-bottom:8px; cursor:pointer; }
+  button.opt:disabled { cursor:default; }
+  button.opt.right { border-color:var(--ok); background:var(--ok-bg); font-weight:600; }
+  button.opt.wrong { border-color:var(--bad); background:var(--bad-bg); }
+  .fb { margin:4px 0 0; font-size:15px; }
+  .fb.r { color:var(--ok); font-weight:600; } .fb.f { color:var(--bad); font-weight:600; }
+  .real { background:var(--soft); border-radius:10px; padding:12px; margin-top:12px; font-size:15px; }
+  .real b { display:block; color:var(--accent); font-size:13px; letter-spacing:.04em; text-transform:uppercase; margin-bottom:2px; }
+  button.next { display:block; width:100%; background:var(--navy); color:var(--on-navy); border:0; border-radius:10px;
+                padding:13px; font-weight:700; margin-top:12px; cursor:pointer; }
+  #result { background:var(--navy); color:var(--on-navy); border-radius:12px; padding:18px; text-align:center; }
+  #result strong { display:block; font-size:30px; }
+  #result small { display:block; margin-top:8px; opacity:.85; }
+  footer { color:var(--muted); font-size:13px; margin-top:22px; }
+</style>
+</head>
+<body>
+<main>
+  <p class="course">GRW · Grundkurs 11 · 17.11.2026</p>
+  <h1>Ihr seid das WTO-Schiedsgericht</h1>
+  <p class="hint">Fünf Fälle landen auf eurem Tisch. Erst urteilen, dann begründen. Danach: drei Fragen zur letzten Stunde.</p>
+  <details>
+    <summary>Regelbuch der WTO (antippen)</summary>
+    <p><b>Meistbegünstigung:</b> Ein Handelsvorteil für ein Mitglied gilt für alle Mitglieder. Ausnahme: Zollunionen und Freihandelsabkommen.</p>
+    <p><b>Inländerbehandlung:</b> Ist eine ausländische Ware im Land, darf sie nicht schlechter behandelt werden als heimische Ware.</p>
+    <p><b>Zollbindung:</b> Jedes Mitglied hat Zoll-Obergrenzen zugesagt und darf sie nicht einseitig überschreiten.</p>
+  </details>
+  <div class="bar"><div id="progress"></div></div>
+  <div id="stage"></div>
+  <footer>Dieses Spiel speichert und sendet keine Daten. Fälle nach: WTO (wto.org, Streitfälle DS544 und DS8/DS10/DS11),
+    Urteil des Supreme Court der USA vom 20.02.2026; Zahlen zur Jeans nach Hans-Böckler-Stiftung (2021): Themenheft Globalisierung.</footer>
+</main>
+<script>
+const CASES = [{"name": "Stahl und Aluminium", "text": "2018 erhöhen die USA die Zölle auf Stahl (25 %) und Aluminium (10 %) – über die Obergrenzen hinaus, die sie in der WTO zugesagt haben. Einige Länder werden ausgenommen. Begründung der USA: nationale Sicherheit.", "violation": true, "reasons": ["Die Zölle liegen über den zugesagten Obergrenzen (Zollbindung), und die Ausnahmen für einzelne Länder verletzen die Meistbegünstigung.", "Ausländischer Stahl wird nach der Einfuhr schlechter behandelt als heimischer (Inländerbehandlung).", "Zölle sind in der WTO grundsätzlich verboten."], "real": "So entschied ein WTO-Schiedsgericht am 09.12.2022; die Berufung auf die nationale Sicherheit ließ es nicht gelten. Die USA legten Berufung ein – ins Leere, denn das Berufungsgremium ist blockiert."}, {"name": "Die EU als Zollunion", "text": "Zwischen Deutschland und Frankreich gibt es keine Zölle. Auf Autos aus Ländern außerhalb der EU erhebt die EU dagegen 10 % Zoll.", "violation": false, "label": "Hintergrund", "reasons": ["Für Zollunionen und Freihandelsabkommen gilt eine Ausnahme von der Meistbegünstigung.", "Die EU ist kein Mitglied der WTO, also gelten die Regeln für sie nicht.", "Die Meistbegünstigung gilt nur für Rohstoffe, nicht für Autos."], "real": "Die Ausnahme steht im Regelwerk der WTO (Artikel XXIV des GATT). Ohne sie gäbe es weder den EU-Binnenmarkt noch Freihandelsabkommen wie das zwischen der EU und Japan."}, {"name": "Whisky gegen Shochu", "text": "Japan besteuert importierten Whisky deutlich höher als den einheimischen Schnaps Shochu. Um Zölle geht es dabei nicht – sondern um eine Steuer, die erst im Land anfällt.", "violation": true, "reasons": ["Importierte Ware wird im Land schlechter behandelt als vergleichbare heimische Ware (Inländerbehandlung).", "Japan überschreitet seine zugesagten Zoll-Obergrenzen (Zollbindung).", "Japan bevorzugt ein einzelnes Lieferland gegenüber allen anderen (Meistbegünstigung)."], "real": "Die EU, Kanada und die USA klagten. 1996 bekamen sie recht: Japans Alkoholsteuer verstieß gegen die WTO-Regeln."}, {"name": "Fahrräder werden billiger", "text": "Angenommener Fall: Ein WTO-Mitglied senkt seinen Zoll auf Fahrräder von 10 % auf 5 % – für Fahrräder aus allen Mitgliedstaaten.", "violation": false, "label": "Merke", "reasons": ["Die zugesagte Obergrenze darf unterschritten werden, und der Vorteil gilt für alle Mitglieder.", "Zölle dürfen nur geändert werden, wenn alle 166 Mitglieder zustimmen – das ist hier geschehen.", "Fahrräder fallen nicht unter die Regeln der WTO."], "real": "Die Zollbindung legt eine Obergrenze fest, keine Untergrenze. Anders wäre es, wenn die Senkung nur für ein einziges Land gälte – dann würde die Meistbegünstigung verletzt."}, {"name": "„Liberation Day“", "text": "Am 2. April 2025 verkünden die USA Zusatzzölle auf Waren aus fast allen Ländern: mindestens 10 %, für viele Länder mehr – für die EU zunächst 20 %.", "violation": true, "reasons": ["Unterschiedliche Zölle je Land verletzen die Meistbegünstigung, und die Sätze liegen über den zugesagten Obergrenzen (Zollbindung).", "Ein Staat darf Zölle nur erhöhen, wenn er ein Handelsdefizit hat – das haben die USA nicht.", "Die WTO verbietet jeden Zoll über 5 %."], "real": "So sehen es viele Fachleute. China, Kanada und Brasilien haben vor der WTO geklagt – ein Urteil gibt es noch nicht. Gestoppt wurden diese Zölle woanders: Am 20.02.2026 entschied das oberste Gericht der USA, dass das Notstandsgesetz, auf das sie sich stützten, keine Zölle erlaubt. Die Regierung ersetzte sie durch Zölle auf anderer Rechtsgrundlage."}];
+const REVIEW = [{"question": "Die Fabrikation einer Eigenmarken-Jeans kostet in Bangladesch 1,16 $ – bei 22,10 $ Ladenpreis. Welcher Standortfaktor erklärt, warum dort genäht wird?", "options": ["Niedrige Lohnkosten", "Nähe zum Absatzmarkt", "Rohstoffe vor Ort", "Spezialisierung auf Knöpfe und Nieten"], "explanation": "Arbeitsintensive Schritte wie das Nähen wandern dorthin, wo Arbeit wenig kostet."}, {"question": "Fracht, Hafengebühren und Spedition machen bei der Jeans weniger als 3 % des Ladenpreises aus. Was folgt daraus?", "options": ["Weite Wege fallen bei der Standortwahl kaum ins Gewicht.", "Transport ist der größte Kostenfaktor.", "Die Umweltfolgen des Transports sind gering.", "Eine Produktion in Deutschland wäre billiger."], "explanation": "Weil Transport so wenig kostet, lohnen sich auch 50.000 km. Über die Umweltfolgen sagt der Preis nichts."}, {"question": "Welche Voraussetzung der weltweiten Arbeitsteilung greifen Zölle direkt an?", "options": ["Den Abbau von Handelsschranken – eine politische Entscheidung", "Die niedrigen Transportkosten", "Die Digitalisierung", "Die niedrigen Löhne in Asien"], "explanation": "Handelsschranken wurden politisch abgebaut – und können politisch wieder aufgebaut werden. Globalisierung ist kein Naturgesetz."}];
+const TOTAL = CASES.length * 2 + REVIEW.length;
+const stage = document.getElementById('stage');
+const progress = document.getElementById('progress');
+let points = 0, index = 0;
+
+function el(tag, cls, text) {
+  const e = document.createElement(tag);
+  if (cls) e.className = cls;
+  if (text) e.textContent = text;
+  return e;
+}
+
+// Reihenfolge der Antworten mischen, die richtige bleibt über ihren Index erkennbar
+function shuffled(n) {
+  const order = [];
+  for (let i = 0; i < n; i++) order.push(i);
+  for (let i = n - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const t = order[i]; order[i] = order[j]; order[j] = t;
+  }
+  return order;
+}
+
+function clearStage() {
+  while (stage.children.length) stage.removeChild(stage.children[0]);
+}
+
+function nextButton(card) {
+  const last = index === CASES.length + REVIEW.length - 1;
+  const b = el('button', 'next', last ? 'Zum Ergebnis' : 'Weiter');
+  b.type = 'button';
+  b.addEventListener('click', () => { index++; show(); });
+  card.appendChild(b);
+}
+
+function options(card, texts, rightIndex, done) {
+  const order = shuffled(texts.length);
+  const buttons = order.map(i => {
+    const b = el('button', 'opt', texts[i]);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      buttons.forEach(x => x.disabled = true);
+      buttons[order.indexOf(rightIndex)].classList.add('right');
+      if (i !== rightIndex) b.classList.add('wrong');
+      done(i === rightIndex);
+    });
+    card.appendChild(b);
+    return b;
+  });
+}
+
+function showCase(c, number) {
+  const card = el('section', 'card');
+  card.appendChild(el('p', 'label', 'Fall ' + number + ' von ' + CASES.length));
+  card.appendChild(el('h2', '', c.name));
+  card.appendChild(el('p', '', c.text));
+  card.appendChild(el('p', 'step', '1. Euer Urteil:'));
+  const pair = el('div', 'pair');
+  const choices = [['Regelverstoß', true], ['Erlaubt', false]].map(([label, value]) => {
+    const b = el('button', 'opt', label);
+    b.type = 'button';
+    b.addEventListener('click', () => {
+      choices.forEach(x => x.disabled = true);
+      const ok = value === c.violation;
+      choices[c.violation ? 0 : 1].classList.add('right');
+      if (!ok) b.classList.add('wrong');
+      if (ok) points++;
+      card.appendChild(el('p', ok ? 'fb r' : 'fb f', (ok ? 'Richtig: ' : 'Nicht ganz: ') +
+        (c.violation ? 'Das ist ein Regelverstoß.' : 'Das ist erlaubt.')));
+      card.appendChild(el('p', 'step', '2. Welche Begründung trägt dieses Urteil?'));
+      options(card, c.reasons, 0, right => {
+        if (right) points++;
+        card.appendChild(el('p', right ? 'fb r' : 'fb f', right ? 'Genau.' : 'Die grün markierte Begründung trägt.'));
+        const real = el('div', 'real');
+        real.appendChild(el('b', '', c.label || 'Was wirklich geschah'));
+        real.appendChild(document.createTextNode(c.real));
+        card.appendChild(real);
+        nextButton(card);
+      });
+    });
+    pair.appendChild(b);
+    return b;
+  });
+  card.appendChild(pair);
+  stage.appendChild(card);
+}
+
+function showReview(q, number) {
+  const card = el('section', 'card');
+  card.appendChild(el('p', 'label', 'Rückblick ' + number + ' von ' + REVIEW.length + ' · letzte Stunde'));
+  card.appendChild(el('h2', '', q.question));
+  options(card, q.options, 0, right => {
+    if (right) points++;
+    card.appendChild(el('p', right ? 'fb r' : 'fb f', right ? 'Richtig.' : 'Leider falsch.'));
+    const real = el('div', 'real');
+    real.appendChild(document.createTextNode(q.explanation));
+    card.appendChild(real);
+    nextButton(card);
+  });
+  stage.appendChild(card);
+}
+
+function showResult() {
+  const r = el('div', '');
+  r.id = 'result';
+  r.appendChild(el('strong', '', points + ' von ' + TOTAL + ' Punkten'));
+  r.appendChild(el('span', '', points >= 11 ? 'Souverän geurteilt – das Schiedsgericht ist in guten Händen.'
+    : points >= 8 ? 'Solide. Schau dir die Fälle, bei denen du unsicher warst, im Regelbuch noch einmal an.'
+    : 'Lies M1 auf dem Arbeitsblatt noch einmal und spiel eine zweite Runde.'));
+  r.appendChild(el('small', '', 'Merk dir den Fall, der dich am meisten überrascht hat – wir klären ihn gemeinsam.'));
+  stage.appendChild(r);
+  const again = el('button', 'next', 'Noch einmal spielen');
+  again.type = 'button';
+  again.addEventListener('click', () => { points = 0; index = 0; show(); });
+  stage.appendChild(again);
+}
+
+function show() {
+  clearStage();
+  const steps = CASES.length + REVIEW.length;
+  progress.style.width = Math.round(index / steps * 100) + '%';
+  if (index < CASES.length) showCase(CASES[index], index + 1);
+  else if (index < steps) showReview(REVIEW[index - CASES.length], index - CASES.length + 1);
+  else showResult();
+}
+
+show();
+</script>
+</body>
+</html>
